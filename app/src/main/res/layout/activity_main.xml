@@ -23,7 +23,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:background="@color/white"
-        app:fabCradleMargin="10dp"
+        app:fabCradleMargin="8dp"
         app:fabCradleRoundedCornerRadius="50dp">
 
 
@@ -43,9 +43,10 @@
         android:layout_height="wrap_content"
         android:backgroundTint="@color/white"
         android:src="@drawable/add_icon"
-        app:layout_anchor="@id/bottomAppBar"
-        app:maxImageSize="40dp"
-        android:tint="@color/lavender"/>
+        android:tint="@color/lavender"
+        app:layout_anchor="@+id/bottomAppBar"
+        app:layout_anchorGravity="top|center"
+        app:maxImageSize="40dp" />
 
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
