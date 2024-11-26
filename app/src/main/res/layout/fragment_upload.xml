@@ -15,7 +15,7 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="60dp"
+            android:layout_height="40dp"
             android:background="@color/white">
 
             <View
@@ -50,33 +50,35 @@
             <RelativeLayout
                 android:id="@+id/ChooseImage"
                 android:layout_width="120dp"
-                android:layout_height="120dp"
+                android:layout_height="250dp"
                 android:layout_margin="10dp"
                 android:background="#A7ED9B">
 
-            <View
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_centerInParent="true"
-                android:background="@drawable/image_icon" />
+                <View
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_centerInParent="true"
+                    android:background="@drawable/image_icon" />
             </RelativeLayout>
 
-            <androidx.viewpager.widget.ViewPager
+            <androidx.viewpager2.widget.ViewPager2
                 android:id="@+id/viewPager"
                 android:layout_width="match_parent"
-                android:layout_height="120dp">
+                android:layout_height="250dp"
+                android:scaleType="centerCrop"
+                android:layout_marginRight="10dp">
 
-                
-            </androidx.viewpager.widget.ViewPager>
+            </androidx.viewpager2.widget.ViewPager2>
+
         </LinearLayout>
-        
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:gravity="center"
             android:background="@color/white">
-            
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

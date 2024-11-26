@@ -1,54 +1,77 @@
 package com.example.devops2.adapter;
 
+
 import android.content.Context;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 
 import androidx.annotation.NonNull;
-import androidx.viewpager.widget.PagerAdapter;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager2.widget.ViewPager2;
 
+import com.bumptech.glide.Glide;
 import com.example.devops2.R;
 
-import java.util.ArrayList;
+import java.util.List;
 
-public class ShowImageAdapter extends PagerAdapter {
+public class ShowImageAdapter extends RecyclerView.Adapter<ShowImageAdapter.ShowImageHolder>{
 
     private Context context;
-    ArrayList<Uri> ImageUrls;
-    LayoutInflater layoutInflater;
+    private List<Uri> mListImage;
+    private ItemListener itemListener;
 
-    public ShowImageAdapter(Context context, ArrayList<Uri> imageUrls) {
+    public ShowImageAdapter(Context context, List<Uri> mListImage) {
         this.context = context;
-        ImageUrls = imageUrls;
+        this.mListImage = mListImage;
     }
 
-
-    @Override
-    public int getCount() {
-        return ImageUrls.size();
+    public Uri getImage(int position){
+        return mListImage.get(position);
     }
 
-    @Override
-    public boolean isViewFromObject(@NonNull View view, @NonNull Object object) {
-        return false;
+    public void setItemListener(ItemListener itemListener) {
+        this.itemListener = itemListener;
     }
 
     @NonNull
     @Override
-    public Object instantiateItem(@NonNull ViewGroup container, int position) {
-        View view = layoutInflater.inflate(R.layout.show_image_layout, container, false);
-        ImageView imageView = view.findViewById(R.id.UploadImage);
-        imageView.setImageURI(ImageUrls.get(position));
-        container.addView(view);
-        return view;
+    public ShowImageHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(context).inflate(R.layout.show_image_layout, parent, false);
+        return new ShowImageHolder(view);
     }
 
     @Override
-    public void destroyItem(@NonNull View container, int position, @NonNull Object object) {
-        ((RelativeLayout)object).removeView(container);
+    public void onBindViewHolder(@NonNull ShowImageHolder holder, int position) {
+        Uri uri = mListImage.get(position);
+        Glide.with(context)
+                .load(uri)
+                .into(holder.imageView);
+    }
+
+    @Override
+    public int getItemCount() {
+        return mListImage.size();
+    }
+
+    public class ShowImageHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+        private final ImageView imageView;
+        public ShowImageHolder(@NonNull View view) {
+            super(view);
+            this.imageView = view.findViewById(R.id.UploadImage);
+            view.setOnClickListener(this);
+        }
+        @Override
+        public void onClick(View view) {
+            if(itemListener != null) {
+                itemListener.onItemClick(view, getAdapterPosition());
+            }
+        }
+    }
+
+    public interface ItemListener {
+        void onItemClick(View view, int position);
     }
 }

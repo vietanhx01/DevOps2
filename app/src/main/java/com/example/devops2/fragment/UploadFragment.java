@@ -1,7 +1,6 @@
 package com.example.devops2.fragment;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -10,12 +9,11 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
+import androidx.viewpager2.widget.ViewPager2;
 
-import android.provider.ContactsContract;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,16 +21,16 @@ import android.widget.RelativeLayout;
 
 import com.example.devops2.R;
 import com.example.devops2.adapter.ShowImageAdapter;
-import com.example.devops2.adapter.ViewPagerAdapter;
 
 import java.util.ArrayList;
 
 public class UploadFragment extends Fragment {
 
     private RelativeLayout pickImageButton;
-    private ViewPager viewPager;
+    private ViewPager2 viewPager;
     private Uri ImageUri;
     private ArrayList<Uri> ChooseImageList;
+    private ShowImageAdapter showImageAdapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -48,6 +46,9 @@ public class UploadFragment extends Fragment {
         viewPager = view.findViewById(R.id.viewPager);
         ChooseImageList = new ArrayList<>();
 
+        showImageAdapter = new ShowImageAdapter(getContext(), ChooseImageList);
+
+        viewPager.setAdapter(showImageAdapter);
         pickImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -70,7 +71,6 @@ public class UploadFragment extends Fragment {
             PickImageFromGallry();
         }
     }
-
     private void PickImageFromGallry() {
         Intent intent = new Intent();
         intent.setType("image/*");
@@ -78,7 +78,6 @@ public class UploadFragment extends Fragment {
         intent.setAction(Intent.ACTION_GET_CONTENT);
         startActivityForResult(intent, 1);
     }
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -89,9 +88,9 @@ public class UploadFragment extends Fragment {
                 ChooseImageList.add(ImageUri);
                 setAdapter();
             }
+            showImageAdapter.notifyDataSetChanged();
         }
     }
-
     private void setAdapter() {
         ShowImageAdapter adapter =new ShowImageAdapter(getContext(), ChooseImageList);
         viewPager.setAdapter(adapter);
