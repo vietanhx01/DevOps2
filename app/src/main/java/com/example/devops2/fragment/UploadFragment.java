@@ -2,6 +2,7 @@ package com.example.devops2.fragment;
 
 import android.Manifest;
 import android.app.DatePickerDialog;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -22,8 +23,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.devops2.R;
 import com.example.devops2.adapter.ShowImageAdapter;
@@ -31,10 +34,12 @@ import com.example.devops2.model.Item;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -53,6 +58,7 @@ public class UploadFragment extends Fragment {
     private ArrayList<String> UrlsList;
     private EditText etOrderCode;
     private TextView tvDate;
+    private ProgressDialog progressDialog;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -80,6 +86,9 @@ public class UploadFragment extends Fragment {
         reference = storage.getReference();
 
         UrlsList = new ArrayList<>();
+        progressDialog = new ProgressDialog(getContext());
+        progressDialog.setTitle("Đang tải dữ liệu");
+        progressDialog.setMessage("Xin hãy đợi trong quá trình tải dữ liệu lên ...");
 
         tvDate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -166,6 +175,7 @@ public class UploadFragment extends Fragment {
         for(int i=0; i<ChooseImageList.size(); i++){
             Uri uri = ChooseImageList.get(i);
             if(uri != null){
+                progressDialog.show();
                 StorageReference imageFolder = FirebaseStorage.getInstance().getReference().child("Image");
                 final StorageReference imageName = imageFolder.child("Image" + i + ": " + uri.getLastPathSegment());
                 imageName.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -182,6 +192,9 @@ public class UploadFragment extends Fragment {
                         });
                     }
                 });
+            } else {
+                progressDialog.dismiss();
+                Toast.makeText(getContext(), "Hãy nhập thông tin đầy đủ", Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -190,13 +203,25 @@ public class UploadFragment extends Fragment {
         String date = tvDate.getText().toString();
         String orderCode = etOrderCode.getText().toString();
         if(ChooseImageList.size() != 0 && !TextUtils.isEmpty(date) && !TextUtils.isEmpty(orderCode)){
-            Item item = new Item(date, orderCode, UrlsList);
+            Item item = new Item("", date, orderCode, UrlsList);
             firestore.collection("Items").add(item).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                 @Override
                 public void onSuccess(DocumentReference documentReference) {
-
+                    item.setIdItem(String.valueOf(LocalDateTime.now()));
+                    firestore.collection("Items").document(item.getIdItem())
+                            .set(item, SetOptions.merge()).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void unused) {
+                                    progressDialog.dismiss();
+                                    Toast.makeText(getContext(), "Tải lên thành công", Toast.LENGTH_SHORT).show();
+                                }
+                            });
                 }
             });
+        } else {
+            progressDialog.dismiss();
+            Toast.makeText(getContext(), "Hãy nhập thông tin đầy đủ", Toast.LENGTH_SHORT).show();
         }
+        ChooseImageList.clear();
     }
 }
