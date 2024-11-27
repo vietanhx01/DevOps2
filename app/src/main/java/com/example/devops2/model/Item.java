@@ -3,8 +3,6 @@ package com.example.devops2.model;
 import java.util.ArrayList;
 
 public class Item {
-
-    private String idItem;
     private String dateOrder, orderCode;
     private ArrayList<String> imageUrls;
 
@@ -14,19 +12,10 @@ public class Item {
 
     }
 
-    public Item(String idItem, String dateOrder, String orderCode, ArrayList<String> imageUrls) {
-        this.idItem = idItem;
+    public Item(String dateOrder, String orderCode, ArrayList<String> imageUrls) {
         this.dateOrder = dateOrder;
         this.orderCode = orderCode;
         this.imageUrls = imageUrls;
-    }
-
-    public String getIdItem() {
-        return idItem;
-    }
-
-    public void setIdItem(String idItem) {
-        this.idItem = idItem;
     }
 
     public String getOrderCode() {

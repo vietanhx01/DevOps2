@@ -4,13 +4,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/lavender"
-    tools:context=".fragment.SubscriptionFragment">
+    tools:context=".fragment.RankingFragment">
 
-    <!-- TODO: Update blank fragment layout -->
     <TextView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="Subscription"
+        android:text="Thứ hạng"
         android:gravity="center"
         android:textSize="30dp"
         android:textColor="@color/white"/>

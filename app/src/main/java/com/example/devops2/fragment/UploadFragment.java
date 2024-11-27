@@ -32,6 +32,8 @@ import com.example.devops2.R;
 import com.example.devops2.adapter.ShowImageAdapter;
 import com.example.devops2.model.Item;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
@@ -51,14 +53,14 @@ public class UploadFragment extends Fragment {
     private ArrayList<Uri> ChooseImageList;
     private ShowImageAdapter showImageAdapter;
     private TextView tvSumOrder;
-    private FirebaseFirestore firestore;
-    private StorageReference reference;
     private FirebaseStorage storage;
     private AppCompatButton btUpload;
     private ArrayList<String> UrlsList;
     private EditText etOrderCode;
     private TextView tvDate;
     private ProgressDialog progressDialog;
+
+    private DatabaseReference root;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -81,9 +83,8 @@ public class UploadFragment extends Fragment {
         tvDate = view.findViewById(R.id.tvDate);
 
         //Connect Firebase
-        firestore = FirebaseFirestore.getInstance();
         storage = FirebaseStorage.getInstance();
-        reference = storage.getReference();
+        root = FirebaseDatabase.getInstance().getReference("DevOps2");
 
         UrlsList = new ArrayList<>();
         progressDialog = new ProgressDialog(getContext());
@@ -177,7 +178,8 @@ public class UploadFragment extends Fragment {
             if(uri != null){
                 progressDialog.show();
                 StorageReference imageFolder = FirebaseStorage.getInstance().getReference().child("Image");
-                final StorageReference imageName = imageFolder.child("Image" + i + ": " + uri.getLastPathSegment());
+                String time = LocalDateTime.now().toString();
+                final StorageReference imageName = imageFolder.child(time);
                 imageName.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
@@ -203,21 +205,10 @@ public class UploadFragment extends Fragment {
         String date = tvDate.getText().toString();
         String orderCode = etOrderCode.getText().toString();
         if(ChooseImageList.size() != 0 && !TextUtils.isEmpty(date) && !TextUtils.isEmpty(orderCode)){
-            Item item = new Item("", date, orderCode, UrlsList);
-            firestore.collection("Items").add(item).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                @Override
-                public void onSuccess(DocumentReference documentReference) {
-                    item.setIdItem(String.valueOf(LocalDateTime.now()));
-                    firestore.collection("Items").document(item.getIdItem())
-                            .set(item, SetOptions.merge()).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void unused) {
-                                    progressDialog.dismiss();
-                                    Toast.makeText(getContext(), "Tải lên thành công", Toast.LENGTH_SHORT).show();
-                                }
-                            });
-                }
-            });
+            progressDialog.dismiss();
+            Item item = new Item(date, orderCode, UrlsList);
+            root.child(date.replace("/", "-")).child("viet-anh1").setValue(item);
+            Toast.makeText(getContext(), "Tải lên thành công", Toast.LENGTH_SHORT).show();
         } else {
             progressDialog.dismiss();
             Toast.makeText(getContext(), "Hãy nhập thông tin đầy đủ", Toast.LENGTH_SHORT).show();

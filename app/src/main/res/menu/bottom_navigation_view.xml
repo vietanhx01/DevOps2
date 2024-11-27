@@ -3,27 +3,22 @@
 
     <item
         android:id="@+id/home"
-        android:title="Home"
+        android:title="Nhà"
         android:icon="@drawable/home_icon"/>
 
     <item
         android:id="@+id/upload"
-        android:title="Upload"
+        android:title="Tải lên"
         android:icon="@drawable/upload_icon"/>
 
     <item
-        android:id="@+id/fab"
-        android:title=""
-        android:enabled="false"/>
+        android:id="@+id/ranking"
+        android:title="Thứ hạng"
+        android:icon="@drawable/moving_icon"/>
 
     <item
-        android:id="@+id/subscriptions"
-        android:title="Subscriptions"
-        android:icon="@drawable/subscriptions_icon"/>
-
-    <item
-        android:id="@+id/library"
-        android:title="Library"
-        android:icon="@drawable/video_library_icon"/>
+        android:id="@+id/Logout"
+        android:title="Thoát"
+        android:icon="@drawable/logout_icon"/>
 
 </menu>

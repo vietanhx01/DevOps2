@@ -31,12 +31,8 @@ public class MainActivity extends AppCompatActivity {
                     binding.viewPager.setCurrentItem(1);
                     break;
 
-                case R.id.subscriptions:
+                case R.id.ranking:
                     binding.viewPager.setCurrentItem(2);
-                    break;
-
-                case R.id.library:
-                    binding.viewPager.setCurrentItem(3);
                     break;
             }
             return true;
@@ -65,11 +61,7 @@ public class MainActivity extends AppCompatActivity {
                         break;
 
                     case 2:
-                        binding.bottomNavigationView.getMenu().findItem(R.id.subscriptions).setChecked(true);
-                        break;
-
-                    case 3:
-                        binding.bottomNavigationView.getMenu().findItem(R.id.library).setChecked(true);
+                        binding.bottomNavigationView.getMenu().findItem(R.id.ranking).setChecked(true);
                         break;
                 }
             }
