@@ -6,44 +6,49 @@ import androidx.viewpager.widget.ViewPager;
 
 import android.os.Bundle;
 import com.example.devops2.adapter.ViewPagerAdapter;
-import com.example.devops2.databinding.ActivityMainBinding;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+
 public class MainActivity extends AppCompatActivity {
-
-    ActivityMainBinding binding;
-
+    private ViewPager viewPager;
+    private BottomNavigationView bottomNavigationView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
 
-        binding = ActivityMainBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
+        initView();
 
-        binding.bottomNavigationView.setBackground(null);
+        bottomNavigationView.setBackground(null);
         setUpViewPager();
 
-        binding.bottomNavigationView.setOnItemSelectedListener(item -> {
+        bottomNavigationView.setOnItemSelectedListener(item -> {
             switch (item.getItemId()) {
                 case R.id.home:
-                    binding.viewPager.setCurrentItem(0);
+                    viewPager.setCurrentItem(0);
                     break;
 
                 case R.id.upload:
-                    binding.viewPager.setCurrentItem(1);
+                    viewPager.setCurrentItem(1);
                     break;
 
                 case R.id.ranking:
-                    binding.viewPager.setCurrentItem(2);
+                    viewPager.setCurrentItem(2);
                     break;
             }
             return true;
         });
     }
 
+    private void initView() {
+        viewPager = findViewById(R.id.view_pager);
+        bottomNavigationView = findViewById(R.id.bottomNavigationView);
+    }
+
     private void setUpViewPager() {
 
         ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager(), FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
-        binding.viewPager.setAdapter(viewPagerAdapter);
-        binding.viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+        viewPager.setAdapter(viewPagerAdapter);
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
@@ -53,15 +58,15 @@ public class MainActivity extends AppCompatActivity {
             public void onPageSelected(int position) {
                 switch(position) {
                     case 0:
-                        binding.bottomNavigationView.getMenu().findItem(R.id.home).setChecked(true);
+                        bottomNavigationView.getMenu().findItem(R.id.home).setChecked(true);
                         break;
 
                     case 1:
-                        binding.bottomNavigationView.getMenu().findItem(R.id.upload).setChecked(true);
+                        bottomNavigationView.getMenu().findItem(R.id.upload).setChecked(true);
                         break;
 
                     case 2:
-                        binding.bottomNavigationView.getMenu().findItem(R.id.ranking).setChecked(true);
+                        bottomNavigationView.getMenu().findItem(R.id.ranking).setChecked(true);
                         break;
                 }
             }

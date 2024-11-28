@@ -32,6 +32,8 @@ import com.example.devops2.R;
 import com.example.devops2.adapter.ShowImageAdapter;
 import com.example.devops2.model.Item;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentReference;
@@ -60,6 +62,7 @@ public class UploadFragment extends Fragment {
     private TextView tvDate;
     private ProgressDialog progressDialog;
 
+    private FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();;
     private DatabaseReference root;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -84,7 +87,7 @@ public class UploadFragment extends Fragment {
 
         //Connect Firebase
         storage = FirebaseStorage.getInstance();
-        root = FirebaseDatabase.getInstance().getReference("DevOps2");
+        root = FirebaseDatabase.getInstance().getReference("Orders");
 
         UrlsList = new ArrayList<>();
         progressDialog = new ProgressDialog(getContext());
@@ -177,7 +180,7 @@ public class UploadFragment extends Fragment {
             Uri uri = ChooseImageList.get(i);
             if(uri != null){
                 progressDialog.show();
-                StorageReference imageFolder = FirebaseStorage.getInstance().getReference().child("Image");
+                StorageReference imageFolder = FirebaseStorage.getInstance().getReference().child("Images");
                 String time = LocalDateTime.now().toString();
                 final StorageReference imageName = imageFolder.child(time);
                 imageName.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -204,10 +207,12 @@ public class UploadFragment extends Fragment {
     private void StoreLinks(ArrayList<String> urlsList){
         String date = tvDate.getText().toString();
         String orderCode = etOrderCode.getText().toString();
+        String temp = currentUser.getEmail().toString();
+        String email = temp.substring(0, temp.length() - 10);
         if(ChooseImageList.size() != 0 && !TextUtils.isEmpty(date) && !TextUtils.isEmpty(orderCode)){
             progressDialog.dismiss();
             Item item = new Item(date, orderCode, UrlsList);
-            root.child(date.replace("/", "-")).child("viet-anh1").setValue(item);
+            root.child(date.replace("/", "-")).child(email).setValue(item);
             Toast.makeText(getContext(), "Tải lên thành công", Toast.LENGTH_SHORT).show();
         } else {
             progressDialog.dismiss();
