@@ -5,12 +5,17 @@ import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import android.os.Bundle;
+import android.widget.Toast;
+
 import com.example.devops2.adapter.ViewPagerAdapter;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class MainActivity extends AppCompatActivity {
     private ViewPager viewPager;
     private BottomNavigationView bottomNavigationView;
+
+    private FirebaseAuth auth;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,6 +39,12 @@ public class MainActivity extends AppCompatActivity {
                 case R.id.ranking:
                     viewPager.setCurrentItem(2);
                     break;
+
+                case R.id.logout:
+                    auth.signOut();
+                    finish();
+                    Toast.makeText(this, "Đăng xuất thành công", Toast.LENGTH_SHORT).show();
+                    break;
             }
             return true;
         });
@@ -42,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
     private void initView() {
         viewPager = findViewById(R.id.view_pager);
         bottomNavigationView = findViewById(R.id.bottomNavigationView);
+        auth = FirebaseAuth.getInstance();
     }
 
     private void setUpViewPager() {

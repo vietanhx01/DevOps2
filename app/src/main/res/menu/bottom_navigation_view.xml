@@ -17,7 +17,7 @@
         android:icon="@drawable/moving_icon"/>
 
     <item
-        android:id="@+id/Logout"
+        android:id="@+id/logout"
         android:title="Thoát"
         android:icon="@drawable/logout_icon"/>
 
